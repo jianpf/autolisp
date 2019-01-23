@@ -153,6 +153,7 @@ cm:梅花孔(水平孔距,水平孔距中点偏上垂直孔距,阵列孔距水平和垂直孔距的2倍)
 -d
 dft:半径圆和矩形剪线5次删除圆
 dfx:点方向(折痕)
+div:平分段系统命令
 
 -e
 ee:镜像
@@ -172,9 +173,9 @@ ttt:长度-3板厚(fattt:获取标注值后-3*板厚值偏移)
 trt:剪线快捷键
 
 -j
-jjt:模拟折弯1次 前长度=折弯长度+1*板厚值(jjat:标注值)
-jjtt:模拟折弯2次 前长度=折弯长度+2*板厚值(jjatt:标注值)
-jjttt:模拟折弯3次 前长度=折弯长度+3*板厚值(jjattt:标注值)
+rt(20190116x旧名jjt):模拟折弯1次 前长度=折弯长度+1*板厚值(jjat:标注值)
+rtt(jjtt):模拟折弯2次 前长度=折弯长度+2*板厚值(jjatt:标注值)
+rttt(jjttt):模拟折弯3次 前长度=折弯长度+3*板厚值(jjattt:标注值)
 
 
 
@@ -203,6 +204,7 @@ ver:20180620-20180912精简版
 7-钣金折弯 保证>折边>够>横桥放>槽口,折弯机下膜槽(宽度:10mm,16mm,22mm)+板厚值
 8-板中开口折弯的必须看上下模刀具长度,(折弯机下模最小20mm)
 9-圆柱圆筒外尺寸扣1个板厚的长度,内的就不要扣板厚
+10-折弯公式(刀槽最小):板厚*6=下模槽口大小/2=对半折弯(最小值+1=孔不变形)
 "))
   (princ)
 )
@@ -512,8 +514,8 @@ ver:20180620-20180912精简版
 
 ;jjat--------
 ;20180902JPF
-;显示标注值+1个板厚
-(defun c:jat()
+;显示标注值+1个板厚c:jat
+(defun c:rt()
 (progn (princ "\n选择--标注对象:")) 
 (progn
 ;选择标注对象
@@ -527,16 +529,16 @@ ver:20180620-20180912精简版
 ;C:jjt()程序-------
   (princ "板厚:")
   (princ tbh)
-  (princ "\njjt偏移后长度:")
+  (princ "\n rt偏移后长度:")
   (setq pyy bzz)
   ;折弯扣除2次板厚
   (setq pyy (+ pyy tbh)) 
      
   (princ "\n折弯扣除:")
   (princ (* tbh 2))
-  
-  (princ "\n    jjat补+1个板厚:")
-  (princ pyy)
+
+  (princ (strcat "\n rt补+1个板厚(" (rtos tbh 2 3)  "):" ))
+  (princ  pyy)
   (setq pyy (getreal))
   (princ)
 (princ) 
@@ -545,8 +547,8 @@ ver:20180620-20180912精简版
 
 ;jjatt--------
 ;20180902JPF
-;显示标注值+2个板厚
-(defun c:jjatt()
+;显示标注值+2个板厚c:jjatt
+(defun c:rtt()
 (progn (princ "\n选择--标注对象:")) 
 (progn
 ;选择标注对象
@@ -560,7 +562,7 @@ ver:20180620-20180912精简版
 ;C:jjtt()程序-------
   (princ "板厚:")
   (princ tbh)
-  (princ "\njjtt偏移后长度:")
+  (princ "\n rtt偏移后长度:")
   (setq pyy bzz)
   ;折弯扣除2次板厚
   (setq pyy (+ pyy tbh)) 
@@ -569,7 +571,7 @@ ver:20180620-20180912精简版
   (princ "\n折弯扣除:")
   (princ (* tbh 2))
   
-  (princ "\n    jjatt补+2个板厚:")
+  (princ (strcat "\n rtt补+2个板厚(" (rtos tbh 2 3)  "):" ))
   (princ pyy)
   (setq pyy (getreal))
   (princ)
@@ -580,8 +582,8 @@ ver:20180620-20180912精简版
 
 ;jjattt--------
 ;20180902JPF
-;显示标注值+2个板厚
-(defun c:jjattt()
+;显示标注值+2个板厚c:jjattt
+(defun c:rttt()
 (progn (princ "\n选择--标注对象:")) 
 (progn
 ;选择标注对象
@@ -595,7 +597,7 @@ ver:20180620-20180912精简版
 ;C:jjtt()程序-------
   (princ "板厚:")
   (princ tbh)
-  (princ "\njjtt偏移后长度:")
+  (princ "\n rttt偏移后长度:")
   (setq pyy bzz)
   ;折弯扣除2次板厚
   (setq pyy (+ pyy tbh)) 
@@ -605,7 +607,7 @@ ver:20180620-20180912精简版
   (princ "\n折弯扣除:")
   (princ (* tbh 2))
   
-  (princ "\n    jjatt补+3个板厚:")
+  (princ (strcat "\n rttt补+3个板厚(" (rtos tbh 2 3)  "):" ))
   (princ pyy)
   (setq pyy (getreal))
   (princ)
@@ -824,3 +826,309 @@ ver:20180620-20180912精简版
 )
 
 ;JPF20180914--------
+
+;取消线宽显示
+(defun c:dw() 
+(progn  (command "lwdisplay"  "off") )
+)
+
+
+
+(defun c:sddd()
+;设置启动
+;常用字符串:
+(progn
+(initget "0 1")
+(setq getw (getkword "显示缺口圆:[关(0)/开(1)]" ))	    
+(princ getw)
+(cond
+((= getw "0") (setq sdddc 0))
+((= getw "1") (setq sdddc 1))
+);end cond
+);end progn
+)
+
+
+;缺口点上方向
+(defun c:dde() 
+;设置圆心位置
+ (setq pit (getpoint (list 0 0 0) "\n圆心:"))
+ (setq x (car pit))
+ (setq y (cadr pit))
+ (setq r 1)
+ ;(setq d 20)
+ ;(setq d (+ r d))
+
+
+    ;判断sdddc是否显示缺口圆
+  (if (= sdddc 1) (progn
+  ;分辨率处理
+   (command "circle" pit 5 )
+  ;记下最后执行操作的对象名称(圆用完可能要删除)
+  (setq cname (entlast))
+  (setq pitx (getpoint (list 0 0 0) "\n方向:"))
+  (entdel cname)
+   ))
+
+
+ (setq ep1 (list x (+ y r) ))
+ (setq ep2 (list (- x r) y ))
+ (setq ep3 (list (+ x r) y ))
+  
+ (progn  (command  "line"  ep1  ep2  "") ) 
+ (progn  (command  "line"  ep1  ep3  "") (princ "\n  ^E:上 \n"))
+ (command  "_trim" "" )
+ ;(progn  (command  "line"  dp1  dp2  "") (princ "\n  vD:下 \n")) 
+ ;(progn  (command  "line"  sp1  sp2  "") (princ "\n  <S:左 \n")) 
+ ;(progn  (command  "line"  fp1  fp2  "") (princ "\n  >F:右 \n")) 
+ 
+  ;默认输出为空
+  (princ)
+)
+
+
+;缺口点下方向
+(defun c:ddd() 
+;设置圆心位置
+ (setq pit (getpoint (list 0 0 0) "\n圆心:"))
+ (setq x (car pit))
+ (setq y (cadr pit))
+ (setq r 1)
+ ;(setq d 20)
+ ;(setq d (+ r d))
+
+
+    ;判断sdddc是否显示缺口圆
+  (if (= sdddc 1) (progn
+  ;分辨率处理
+   (command "circle" pit 5 )
+  ;记下最后执行操作的对象名称(圆用完可能要删除)
+  (setq cname (entlast))
+  (setq pitx (getpoint (list 0 0 0) "\n方向:"))
+  (entdel cname)
+   ))
+  
+ (setq ep1 (list x (- y r) ))
+ (setq ep2 (list (- x r) y ))
+ (setq ep3 (list (+ x r) y ))
+  
+ (progn  (command  "line"  ep1  ep2  "") ) 
+ (progn  (command  "line"  ep1  ep3  "") (princ "\n  vD:下 \n"))
+ (command  "_trim" "" )
+ ;(progn  (command  "line"  dp1  dp2  "") (princ "\n  vD:下 \n")) 
+ ;(progn  (command  "line"  sp1  sp2  "") (princ "\n  <S:左 \n")) 
+ ;(progn  (command  "line"  fp1  fp2  "") (princ "\n  >F:右 \n")) 
+ 
+  ;默认输出为空
+  (princ)
+)
+;缺口左方向
+(defun c:dds() 
+;设置圆心位置
+ (setq pit (getpoint (list 0 0 0) "\n圆心:"))
+ (setq x (car pit))
+ (setq y (cadr pit))
+ (setq r 1)
+ ;(setq d 20)
+ ;(setq d (+ r d))
+
+
+    ;判断sdddc是否显示缺口圆
+  (if (= sdddc 1) (progn
+  ;分辨率处理
+   (command "circle" pit 5 )
+  ;记下最后执行操作的对象名称(圆用完可能要删除)
+  (setq cname (entlast))
+  (setq pitx (getpoint (list 0 0 0) "\n方向:"))
+  (entdel cname)
+   ))
+  
+ (setq ep1 (list (- x r) y ))
+ (setq ep2 (list x (+ y r) ))
+ (setq ep3 (list x (- y r) ))
+  
+ (progn  (command  "line"  ep1  ep2  "") ) 
+ (progn  (command  "line"  ep1  ep3  "") (princ "\n  vD:左 \n"))
+ (command  "_trim" "" )
+ ;(progn  (command  "line"  dp1  dp2  "") (princ "\n  vD:下 \n")) 
+ ;(progn  (command  "line"  sp1  sp2  "") (princ "\n  <S:左 \n")) 
+ ;(progn  (command  "line"  fp1  fp2  "") (princ "\n  >F:右 \n")) 
+ 
+  ;默认输出为空
+  (princ)
+)
+;缺口右方向
+(defun c:ddf() 
+;设置圆心位置
+ (setq pit (getpoint (list 0 0 0) "\n圆心:"))
+ (setq x (car pit))
+ (setq y (cadr pit))
+ (setq r 1)
+ ;(setq d 20)
+ ;(setq d (+ r d))
+  
+
+    ;判断sdddc是否显示缺口圆
+  (if (= sdddc 1) (progn
+  ;分辨率处理
+   (command "circle" pit 5 )
+  ;记下最后执行操作的对象名称(圆用完可能要删除)
+  (setq cname (entlast))
+  (setq pitx (getpoint (list 0 0 0) "\n方向:"))
+  (entdel cname)
+   ))
+  
+ (setq ep1 (list (+ x r) y ))
+ (setq ep2 (list x (+ y r) ))
+ (setq ep3 (list x (- y r) ))
+  (princ ep1)
+   (princ ep2)
+   (princ ep3)
+ (progn  (command  "line"  ep1  ep2  "") ) 
+ (progn  (command  "line"  ep1  ep3  "") (princ "\n  vD:左 \n")) 
+ (command  "_trim" "" )
+ ;(progn  (command  "line"  dp1  dp2  "") (princ "\n  vD:下 \n")) 
+ ;(progn  (command  "line"  sp1  sp2  "") (princ "\n  <S:左 \n")) 
+ ;(progn  (command  "line"  fp1  fp2  "") (princ "\n  >F:右 \n")) 
+ 
+  ;默认输出为空
+  (princ)
+)
+
+
+;缺口旋转方向
+(defun c:ddx() 
+;设置圆心位置
+ (setq pit (getpoint (list 0 0 0) "\n圆心:"))
+ (setq x (car pit))
+ (setq y (cadr pit))
+ (setq r 1)
+ ;(setq d 20)
+ ;(setq d (+ r d))
+
+ ;旋转必须
+  ;分辨率处理
+   (command "circle" pit 5 )
+  ;记下最后执行操作的对象名称(圆用完可能要删除)
+  (setq cname (entlast))
+  (setq pitx (getpoint (list 0 0 0) "\n方向:"))
+  (entdel cname)
+ 
+  
+ (setq ep1 (list (+ x r) y ))
+ (setq ep2 (list x (+ y r) ))
+ (setq ep3 (list x (- y r) ))
+  (princ ep1)
+   (princ ep2)
+   (princ ep3)
+ (command  "line"  ep1  ep2  "")
+(setq l1name (entlast))
+  (command  "line"  ep1  ep3  "")
+(setq l2name (entlast))
+  (princ "\n  vD:左 \n")
+;(entdel l1name)
+;(entdel l2name)
+
+ ;(progn  (command  "line"  dp1  dp2  "") (princ "\n  vD:下 \n")) 
+ ;(progn  (command  "line"  sp1  sp2  "") (princ "\n  <S:左 \n")) 
+ ;(progn  (command  "line"  fp1  fp2  "") (princ "\n  >F:右 \n")) 
+ (command  "rotate"  l1name l2name "" pit pitx)
+  (command  "_trim" "" )
+  ;默认输出为空
+ (princ)
+)
+
+
+;缺口旋转方向
+(defun c:ddxx() 
+  ;设置圆心位置
+ (setq pitx (getpoint (list 0 0 0) "\n折痕点:"))
+
+
+ 
+  ;分辨率处理
+   (command "circle" pitx 5 )
+  ;记下最后执行操作的对象名称(圆用完可能要删除)
+  (setq cname (entlast))
+  (setq pit (getpoint (list 0 0 0) "\n方向:"))
+  (entdel cname)
+ 
+  (setq r 1)
+ (setq ep1 (list (+ x r) y ))
+ (setq ep2 (list x (+ y r) ))
+ (setq ep3 (list x (- y r) ))
+  (princ ep1)
+   (princ ep2)
+   (princ ep3)
+ (command  "line"  ep1  ep2  "")
+(setq l1name (entlast))
+  (command  "line"  ep1  ep3  "")
+(setq l2name (entlast))
+  (princ "\n  vD:左 \n")
+;(entdel l1name)
+;(entdel l2name)
+
+ ;(progn  (command  "line"  dp1  dp2  "") (princ "\n  vD:下 \n")) 
+ ;(progn  (command  "line"  sp1  sp2  "") (princ "\n  <S:左 \n")) 
+ ;(progn  (command  "line"  fp1  fp2  "") (princ "\n  >F:右 \n")) 
+ ;设置圆心位置
+  (command  "rotate"  l1name l2name "" pit )
+  (command  "_trim" "" )
+  ;默认输出为空
+ (princ)
+)
+
+
+;剪线快捷键trt
+(defun c:trt()
+(command  "_trim" "" )
+)
+ 
+
+;角2
+(defun c:dftt() 
+;设置圆心位置
+ (setq pit (getpoint (list 0 0 0) "\n圆心:"))
+ (setq x (car pit))
+ (setq y (cadr pit))
+ (setq r 5)
+ ;(setq d 20)
+ ;(setq d (+ r d))
+
+
+    ;判断sdddc是否显示缺口圆
+  (if (= sdddc 1) (progn
+  ;分辨率处理
+   (command "circle" pit 5 )
+  ;记下最后执行操作的对象名称(圆用完可能要删除)
+  (setq cname (entlast))
+  (setq pitx (getpoint (list 0 0 0) "\n方向:"))
+  (entdel cname)
+   ))
+
+
+ (setq ep1 (list x (+ y (+ r 0)) ))
+ (setq ep2 (list (- x (+ r 0)) y ))
+ (setq ep3 (list x (- y r) ))
+ (setq ep4 (list x (- y (+ r 25)) ))
+ (setq ep5 (list (+ x r) y ))
+ (setq ep6 (list (+ x (+ r 25)) y ))
+   
+ (progn  (command  "line"  pit  ep1  "") )
+  (setq l1name (entlast))
+ (progn  (command  "line"  pit  ep2  "") )
+  (setq l2name (entlast))
+ (progn  (command  "line"  ep3  ep4  "") )
+  (setq l3name (entlast))
+ (progn  (command  "line"  ep5  ep6  "") )
+  (setq l4name (entlast))
+
+  (progn
+  ;画完旋转
+ (command  "rotate"  l1name l2name l3name l4name "" pit "r" pit ep2  pause)
+  ;画完圆,执行延长剪线命令
+  (command "extend" "" )
+ )
+  ;默认输出为空
+  (princ)
+)
