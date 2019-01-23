@@ -833,7 +833,7 @@ ver:20180620-20180912精简版
 )
 
 
-
+;JPF20190120--------
 (defun c:sddd()
 ;设置启动
 ;常用字符串:
@@ -1085,7 +1085,7 @@ ver:20180620-20180912精简版
 )
  
 
-;角2
+;角2 20190123x
 (defun c:dftt() 
 ;设置圆心位置
  (setq pit (getpoint (list 0 0 0) "\n圆心:"))
@@ -1131,4 +1131,58 @@ ver:20180620-20180912精简版
  )
   ;默认输出为空
   (princ)
+)
+
+
+
+;标注外尺寸art  jpf20190123x
+(defun c:art()
+;获取对象
+(setq cent(entget (car (entsel (strcat "art补+1个板厚(" (rtos tbh 2 3)  "):" ))))) 
+(setq i (cdr (assoc 42 cent)))
+(setq i (+ i (* 1 tbh)))
+(setq i  (strcat ".折好" (rtos i 2 3)  ))
+(princ i)
+;修改标注值(替换值,原值,点对中) 
+(setq cent (subst(cons 1 i)(assoc 1 cent)cent))
+(entmod cent)
+(princ)
+)
+ ;标注外尺寸artt  jpf20190123x
+(defun c:artt()
+;获取对象
+(setq cent(entget (car (entsel (strcat "artt补+2个板厚(" (rtos tbh 2 3)  "):" ))))) 
+(setq i (cdr (assoc 42 cent)))
+(setq i (+ i (* 2 tbh)))
+(setq i  (strcat "..折好" (rtos i 2 3)  ))
+(princ i)
+;修改标注值(替换值,原值,点对中) 
+(setq cent (subst(cons 1 i)(assoc 1 cent)cent))
+(entmod cent)
+(princ)
+)
+;标注外尺寸rttta  jpf20190123x
+(defun c:arttt()
+;获取对象
+(setq cent(entget (car (entsel (strcat "arttt补+3个板厚(" (rtos tbh 2 3)  "):" ))))) 
+(setq i (cdr (assoc 42 cent)))
+(setq i (+ i (* 3 tbh)))
+(setq i  (strcat "...折好" (rtos i 2 3)  ))
+(princ i)
+;修改标注值(替换值,原值,点对中) 
+(setq cent (subst(cons 1 i)(assoc 1 cent)cent))
+(entmod cent)
+(princ)
+)
+;标注外尺寸arts  jpf20190123x
+(defun c:arts()
+;获取对象
+(setq cent(entget (car (entsel (strcat "重置标尺(" (rtos tbh 2 3)  "):" ))))) 
+(setq i (cdr (assoc 1 cent)))
+(princ (strcat "修改前:" i ))
+(setq i "")
+;修改标注值(替换值,原值,点对中) 
+(setq cent (subst(cons 1 i)(assoc 1 cent)cent))
+(entmod cent)
+(princ)
 )
