@@ -18,6 +18,21 @@
   (princ)
 )
 
+;移动捷键ww
+(defun c:ww()
+  (command  "move"  )
+)
+
+;偏移快捷键fte板厚的1半弧形用jianpf20190704
+(defun c:fte()
+  (princ "半弧形偏移板厚:")
+  (princ (strcat  (rtos tbh) "/2=" (rtos (/ tbh 2))))
+  
+  ;(princ "\n")
+  (command  "offset" (/ tbh 2) )
+  (princ)
+)
+
 ;20180902JPF
 ;获取标注值再偏移
 (defun c:fsa()
@@ -138,53 +153,25 @@
 (defun c:kk()
  
   (setq hhs (getreal "
--a
-ad:线性标注
-add:直径标注
-
--c
-cc:复制
-ce:圆槽
-cdd:修改圆直径
-cddd:编辑圆直径
-cm:梅花孔(水平孔距,水平孔距中点偏上垂直孔距,阵列孔距水平和垂直孔距的2倍)
-
-
--d
-dft:半径圆和矩形剪线5次删除圆
-dfx:点方向(折痕)
-div:平分段系统命令
-
--e
-ee:镜像
-
--f
-fa:直线
-fe:总对称偏移
-fs:偏移
-ft:偏移1个板厚
-fsa:;获取标注值再偏移(标注值)
-
--t
-tbh:设置板厚值
-t:长度-1*板厚值(fat:获取标注值后-1*板厚值偏移)
-tt:长度-2板厚(fatt:获取标注值后-2*板厚值偏移)
-ttt:长度-3板厚(fattt:获取标注值后-3*板厚值偏移)
-trt:剪线快捷键
-
+-a    ad:线性标注  adh 快速斜边标注   add:直径标注  art:折好高度1个板厚(artt:2个板厚 artt:3个板厚)
+-c    cc:复制  ce:圆槽  cdd:修改圆直径  cddd:编辑圆直径  cm:梅花孔(水平孔距,水平孔距中点偏上垂直孔距,
+      阵列孔距水平和垂直孔距的2倍) cxx:圆打标  ccds:同心圆环  ccdss设置圆环圆心  
+-d    dft:半径圆和矩形剪线5次删除圆  dfx:点方向(折痕)  ddx:缺口><v dff:dds:ddd:dde:快速折痕
+      div:平分段系统命令
+-e    ee:镜像  ega:清除组
+-f    fa:直线  fe:总对称偏移  fs:偏移  ft:偏移1个板厚 fte:1半板厚  fsa:;获取标注值再偏移(标注值)
+-t    tbh:设置板厚值   trt:剪线快捷键
+      t:长度-1*板厚值(fat:获取标注值后-1*板厚值偏移)
+      tt:长度-2板厚(fatt:获取标注值后-2*板厚值偏移)
+      ttt:长度-3板厚(fattt:获取标注值后-3*板厚值偏移)
 -j
-rt(20190116x旧名jjt):模拟折弯1次 前长度=折弯长度+1*板厚值(jjat:标注值)
-rtt(jjtt):模拟折弯2次 前长度=折弯长度+2*板厚值(jjatt:标注值)
-rttt(jjttt):模拟折弯3次 前长度=折弯长度+3*板厚值(jjattt:标注值)
-
-
-
--s
-s:拉伸
-sc:缩放
-scr:缩放到新尺寸 
-SELECTSIMILAR:(CAD)选择同类对象
-
+      rt(20190116x旧名jjt):模拟折弯1次 前长度=折弯长度+1*板厚值(jjat:标注值)
+      rtt(jjtt):模拟折弯2次 前长度=折弯长度+2*板厚值(jjatt:标注值)
+      rttt(jjttt):模拟折弯3次 前长度=折弯长度+3*板厚值(jjattt:标注值)
+      jbox:jjbox:简单盒子jh:jjh:盒子折弯线
+-s    s:拉伸   sc:缩放 (scs:缩0.5  scd:放大2倍)   scr:缩放到新尺寸(开发中2019.3) std:统计刀数 stdss:重置刀数
+      SELECTSIMILAR:(CAD)选择同类对象
+-w    wst:外部存储strfilename  rst:读取存储
 "))
 
 )
@@ -205,6 +192,12 @@ ver:20180620-20180912精简版
 8-板中开口折弯的必须看上下模刀具长度,(折弯机下模最小20mm)
 9-圆柱圆筒外尺寸扣1个板厚的长度,内的就不要扣板厚
 10-折弯公式(刀槽最小):板厚*6=下模槽口大小/2=对半折弯(最小值+1=孔不变形)
+11-反刀边线开三角1-3mm(向下折或画线折)
+12-数量超过10件,先分类材料\板厚,按名称排序
+经验:
+T5厚折不到70度20190526
+不锈钢不能百叶孔20190622
+13-滚圆,开料整圆,只能 圆环+圆环 (不能 半环+半环)20190909x
 "))
   (princ)
 )
@@ -226,10 +219,14 @@ ver:20180620-20180912精简版
  3       2.8                 6             5.5                    2.5
  4       3.5                 8             7.2
  5       4.5                 10            9.5
- 6       5.8                 12            11
-.                              16
-.                              18
+ 6       5.5                 12            11
+.                              16            16
+.10                          18
 .                              20
+.                              0.8           0.8
+                              14
+
+3 含花纹板 2
 "))
   (princ)
 )
@@ -239,11 +236,13 @@ ver:20180620-20180912精简版
 
 ;设置圆直径cdd
 (defun c:cdd()
+
 ;判断是否有圆直径值
 (if (not czj) (setq czj (getreal "\n圆直径:")))
 ;输出圆直径值
 (progn (princ "圆直径:") (princ czj))
 ;选择单个圆对象,修改点对的圆半径值为直径值的一半
+(repeat 100  
 (progn
 (setq cent(entget (car (entsel ))))
 (progn (princ "\n圆直径:") (princ (* 2(cdr (assoc 40 cent)))) (princ " -> ")(princ czj))
@@ -252,6 +251,7 @@ ver:20180620-20180912精简版
 
 (princ)
 )
+);退出循环
 )
 
 ;重新设置圆直径cddd
@@ -643,7 +643,19 @@ ver:20180620-20180912精简版
 (command  "_trim" "" )
 )
 
+;ega解组清除组20190609
+(defun c:ega()
+(command  "UNGROUP" "a" )
+)
 
+;缩放快捷键scs
+(defun c:scs()
+(command  "scale" pause "0.5" )
+)
+;放大快捷键scd
+(defun c:scd()
+(command  "scale"  pause "2" )
+)
 
 
 
@@ -722,12 +734,12 @@ ver:20180620-20180912精简版
   
  (setq fp1 (list (+ x r) y ))
  (setq fp2 (list (+ x d) y ))
-
+(setvar "osmode" 0);;关闭捕捉20190520
  (progn  (command  "line"  ep1  ep2  "") (princ "\n  ^E:上 \n")) 
  ;(progn  (command  "line"  dp1  dp2  "") (princ "\n  vD:下 \n")) 
  ;(progn  (command  "line"  sp1  sp2  "") (princ "\n  <S:左 \n")) 
  ;(progn  (command  "line"  fp1  fp2  "") (princ "\n  >F:右 \n")) 
- 
+ (setvar "osmode" 16383);;捕捉20190520
   ;默认输出为空
   (princ)
 )
@@ -753,12 +765,12 @@ ver:20180620-20180912精简版
   
  (setq fp1 (list (+ x r) y ))
  (setq fp2 (list (+ x d) y ))
-
+(setvar "osmode" 0);;关闭捕捉20190520
  ;(progn  (command  "line"  ep1  ep2  "") (princ "\n  ^E:上 \n")) 
  (progn  (command  "line"  dp1  dp2  "") (princ "\n  vD:下 \n")) 
  ;(progn  (command  "line"  sp1  sp2  "") (princ "\n  <S:左 \n")) 
  ;(progn  (command  "line"  fp1  fp2  "") (princ "\n  >F:右 \n")) 
- 
+ (setvar "osmode" 16383);;捕捉20190520
   ;默认输出为空
   (princ)
 )
@@ -784,12 +796,12 @@ ver:20180620-20180912精简版
   
  (setq fp1 (list (+ x r) y ))
  (setq fp2 (list (+ x d) y ))
-
+(setvar "osmode" 0);;关闭捕捉20190520
  ;(progn  (command  "line"  ep1  ep2  "") (princ "\n  ^E:上 \n")) 
  ;(progn  (command  "line"  dp1  dp2  "") (princ "\n  vD:下 \n")) 
  (progn  (command  "line"  sp1  sp2  "") (princ "\n  <S:左 \n")) 
  ;(progn  (command  "line"  fp1  fp2  "") (princ "\n  >F:右 \n")) 
- 
+ (setvar "osmode" 16383);;捕捉20190520
   ;默认输出为空
   (princ)
 )
@@ -815,12 +827,12 @@ ver:20180620-20180912精简版
   
  (setq fp1 (list (+ x r) y ))
  (setq fp2 (list (+ x d) y ))
-
+(setvar "osmode" 0);;关闭捕捉20190520
  ;(progn  (command  "line"  ep1  ep2  "") (princ "\n  ^E:上 \n")) 
  ;(progn  (command  "line"  dp1  dp2  "") (princ "\n  vD:下 \n")) 
  ;(progn  (command  "line"  sp1  sp2  "") (princ "\n  <S:左 \n")) 
  (progn  (command  "line"  fp1  fp2  "") (princ "\n  >F:右 \n")) 
- 
+ (setvar "osmode" 16383);;捕捉20190520w
   ;默认输出为空
   (princ)
 )
@@ -858,7 +870,7 @@ ver:20180620-20180912精简版
  (setq r 1)
  ;(setq d 20)
  ;(setq d (+ r d))
-
+(setvar "osmode" 0);;关闭捕捉
 
     ;判断sdddc是否显示缺口圆
   (if (= sdddc 1) (progn
@@ -881,7 +893,7 @@ ver:20180620-20180912精简版
  ;(progn  (command  "line"  dp1  dp2  "") (princ "\n  vD:下 \n")) 
  ;(progn  (command  "line"  sp1  sp2  "") (princ "\n  <S:左 \n")) 
  ;(progn  (command  "line"  fp1  fp2  "") (princ "\n  >F:右 \n")) 
- 
+ (setvar "osmode" 16383);;开启捕捉20190520
   ;默认输出为空
   (princ)
 )
@@ -897,7 +909,7 @@ ver:20180620-20180912精简版
  ;(setq d 20)
  ;(setq d (+ r d))
 
-
+(setvar "osmode" 0);;关闭捕捉20190520
     ;判断sdddc是否显示缺口圆
   (if (= sdddc 1) (progn
   ;分辨率处理
@@ -918,7 +930,7 @@ ver:20180620-20180912精简版
  ;(progn  (command  "line"  dp1  dp2  "") (princ "\n  vD:下 \n")) 
  ;(progn  (command  "line"  sp1  sp2  "") (princ "\n  <S:左 \n")) 
  ;(progn  (command  "line"  fp1  fp2  "") (princ "\n  >F:右 \n")) 
- 
+ (setvar "osmode" 16383);;捕捉20190520
   ;默认输出为空
   (princ)
 )
@@ -932,7 +944,7 @@ ver:20180620-20180912精简版
  ;(setq d 20)
  ;(setq d (+ r d))
 
-
+(setvar "osmode" 0);;关闭捕捉20190520
     ;判断sdddc是否显示缺口圆
   (if (= sdddc 1) (progn
   ;分辨率处理
@@ -953,7 +965,7 @@ ver:20180620-20180912精简版
  ;(progn  (command  "line"  dp1  dp2  "") (princ "\n  vD:下 \n")) 
  ;(progn  (command  "line"  sp1  sp2  "") (princ "\n  <S:左 \n")) 
  ;(progn  (command  "line"  fp1  fp2  "") (princ "\n  >F:右 \n")) 
- 
+ (setvar "osmode" 16383);;关闭捕捉20190520
   ;默认输出为空
   (princ)
 )
@@ -967,7 +979,7 @@ ver:20180620-20180912精简版
  ;(setq d 20)
  ;(setq d (+ r d))
   
-
+(setvar "osmode" 0);;关闭捕捉20190520
     ;判断sdddc是否显示缺口圆
   (if (= sdddc 1) (progn
   ;分辨率处理
@@ -990,14 +1002,14 @@ ver:20180620-20180912精简版
  ;(progn  (command  "line"  dp1  dp2  "") (princ "\n  vD:下 \n")) 
  ;(progn  (command  "line"  sp1  sp2  "") (princ "\n  <S:左 \n")) 
  ;(progn  (command  "line"  fp1  fp2  "") (princ "\n  >F:右 \n")) 
- 
+ (setvar "osmode" 16383);;关闭捕捉20190520
   ;默认输出为空
   (princ)
 )
 
 
 ;缺口旋转方向
-(defun c:ddx() 
+(defun c:ddxx() 
 ;设置圆心位置
  (setq pit (getpoint (list 0 0 0) "\n圆心:"))
  (setq x (car pit))
@@ -1005,15 +1017,16 @@ ver:20180620-20180912精简版
  (setq r 1)
  ;(setq d 20)
  ;(setq d (+ r d))
-
+(setvar "osmode" 0);;关闭捕捉20190520
  ;旋转必须
   ;分辨率处理
    (command "circle" pit 5 )
+  (setvar "osmode" 16383);;捕捉20190520
   ;记下最后执行操作的对象名称(圆用完可能要删除)
   (setq cname (entlast))
-  (setq pitx (getpoint (list 0 0 0) "\n方向:"))
+  (setq pitx (getpoint (list 0 0 0) "\n  方向:(请放大圆占半屏后选择)"))
   (entdel cname)
- 
+ (setvar "osmode" 0);;关闭捕捉20190520
   
  (setq ep1 (list (+ x r) y ))
  (setq ep2 (list x (+ y r) ))
@@ -1033,26 +1046,31 @@ ver:20180620-20180912精简版
  ;(progn  (command  "line"  sp1  sp2  "") (princ "\n  <S:左 \n")) 
  ;(progn  (command  "line"  fp1  fp2  "") (princ "\n  >F:右 \n")) 
  (command  "rotate"  l1name l2name "" pit pitx)
-  (command  "_trim" "" )
+  (setvar "osmode" 16383);;关闭捕捉20190520
+  ;(command  "_trim" "" )
+  
   ;默认输出为空
  (princ)
 )
 
 
 ;缺口旋转方向
-(defun c:ddxx() 
+(defun c:ddx() 
   ;设置圆心位置
  (setq pitx (getpoint (list 0 0 0) "\n折痕点:"))
 
-
- 
+ (setvar "osmode" 0);;关闭捕捉20190520
   ;分辨率处理
    (command "circle" pitx 5 )
   ;记下最后执行操作的对象名称(圆用完可能要删除)
   (setq cname (entlast))
-  (setq pit (getpoint (list 0 0 0) "\n方向:"))
+  (setvar "osmode" 16383);;开启捕捉20190530
+  (setq pit (getpoint (list 0 0 0) "\n缺角位置:"))
+  ;;jianpf20190612x修复bug,xy位置
+ (setq x (car pit))
+ (setq y (cadr pit))
   (entdel cname)
- 
+ (setvar "osmode" 0);;关闭捕捉20190520
   (setq r 1)
  (setq ep1 (list (+ x r) y ))
  (setq ep2 (list x (+ y r) ))
@@ -1073,7 +1091,9 @@ ver:20180620-20180912精简版
  ;(progn  (command  "line"  fp1  fp2  "") (princ "\n  >F:右 \n")) 
  ;设置圆心位置
   (command  "rotate"  l1name l2name "" pit )
-  (command  "_trim" "" )
+  
+  (setvar "osmode" 16383);;捕捉20190520
+  ;(command  "_trim" "" )
   ;默认输出为空
  (princ)
 )
@@ -1095,18 +1115,19 @@ ver:20180620-20180912精简版
  ;(setq d 20)
  ;(setq d (+ r d))
 
-
+(setvar "osmode" 0);;关闭捕捉20190520
     ;判断sdddc是否显示缺口圆
   (if (= sdddc 1) (progn
   ;分辨率处理
    (command "circle" pit 5 )
   ;记下最后执行操作的对象名称(圆用完可能要删除)
   (setq cname (entlast))
+   (setvar "osmode" 16383);;捕捉20190520
   (setq pitx (getpoint (list 0 0 0) "\n方向:"))
   (entdel cname)
    ))
 
-
+(setvar "osmode" 0);;关闭捕捉20190520
  (setq ep1 (list x (+ y (+ r 0)) ))
  (setq ep2 (list (- x (+ r 0)) y ))
  (setq ep3 (list x (- y r) ))
@@ -1129,6 +1150,7 @@ ver:20180620-20180912精简版
   ;画完圆,执行延长剪线命令
   (command "extend" "" )
  )
+  (setvar "osmode" 16383);;捕捉20190520
   ;默认输出为空
   (princ)
 )
@@ -1174,6 +1196,7 @@ ver:20180620-20180912精简版
 (entmod cent)
 (princ)
 )
+
 ;标注外尺寸arts  jpf20190123x
 (defun c:arts()
 ;获取对象
@@ -1186,3 +1209,146 @@ ver:20180620-20180912精简版
 (entmod cent)
 (princ)
 )
+
+;特性匹配ca  jpf20190313s
+(defun c:ca() 
+(command "matchprop")
+)
+
+
+
+;拉伸斜点sq  jpf20190307w
+(defun c:sq() 
+(setq p1 (getpoint))  
+(setq p2 (getpoint))
+(setq p1x (car p1))
+(setq p1y (cadr p1))
+(setq p1z (caddr p1))
+(setq p2x (car p2))
+(setq p2y (cadr p2))
+(setq p2z (caddr p2))
+(setq p12x (- p2x p1x))
+(setq p12y (- p2y p1y))
+(setq p12z (- p2z p1z))
+(setq q (list p12x p12y p12z))
+
+ ;(command "select"   )
+   ;(COMMAND "STRETCH" "C" p4 p5 "" P4 P3)
+ ;(command "stretch" "d" "!q" )
+ ;(command "stretch" "d")
+)
+
+;拉伸斜点se  jpf20190307w
+(defun c:sw() 
+(setq p1 (getpoint))  
+(setq p2 (getpoint))
+(setq p1x (car p1))
+(setq p1y (cadr p1))
+(setq p1z (caddr p1))
+(setq p2x (car p2))
+(setq p2y (cadr p2))
+(setq p2z (caddr p2))
+(setq p12x (- p2x p1x))
+(setq p12y (- p2y p1y))
+(setq p12z (- p2z p1z))
+(setq w (list p12x p12y p12z)) 
+)
+
+;拉伸斜点se  jpf20190307w
+(defun c:se() 
+(setq p1 (getpoint))  
+(setq p2 (getpoint))
+(setq p1x (car p1))
+(setq p1y (cadr p1))
+(setq p1z (caddr p1))
+(setq p2x (car p2))
+(setq p2y (cadr p2))
+(setq p2z (caddr p2))
+(setq p12x (- p2x p1x))
+(setq p12y (- p2y p1y))
+(setq p12z (- p2z p1z))
+(setq e (list p12x p12y p12z)) 
+)
+
+
+;拉伸斜点sqq  jpf20190307w
+(defun c:sqq() 
+(command "stretch" "p"  P2_1)
+)
+
+
+;adh 快速斜边标注  jpf20190323s
+(defun c:adh() 
+(command "dimaligned")
+)
+;addc 快速斜边标注  jpf20190323s
+(defun c:addc() 
+(command "dimarc")
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;jianpf20190516s测试代码
+
+;标注外尺寸art  jpf20190123x
+(defun c:artf()
+  (progn
+    (setq p1p2 (list (getpoint) (getpoint)) )
+  (command  "_dimlinear" (car p1p2) (cadr p1p2 ) pause)
+    )
+;获取对象
+(setq cent(entget (car (entsel (strcat "art补+1个板厚(" (rtos tbh 2 3)  "):" ))))) 
+(setq i (cdr (assoc 42 cent)))
+(setq i (+ i (* 1 tbh)))
+(setq i  (strcat ".折好" (rtos i 2 3)  ))
+(princ i)
+;修改标注值(替换值,原值,点对中) 
+(setq cent (subst(cons 1 i)(assoc 1 cent)cent))
+(entmod cent)
+(princ)
+)
+ ;标注外尺寸artt  jpf20190123x
+(defun c:arttf()
+  (command  "_dimlinear" )
+;获取对象
+(setq cent(entget (car (entsel (strcat "artt补+2个板厚(" (rtos tbh 2 3)  "):" ))))) 
+(setq i (cdr (assoc 42 cent)))
+(setq i (+ i (* 2 tbh)))
+(setq i  (strcat "..折好" (rtos i 2 3)  ))
+(princ i)
+;修改标注值(替换值,原值,点对中) 
+(setq cent (subst(cons 1 i)(assoc 1 cent)cent))
+(entmod cent)
+(princ)
+)
+;标注外尺寸rttta  jpf20190123x
+(defun c:artttf()
+  (command  "_dimlinear" )
+;获取对象
+(setq cent(entget (car (entsel (strcat "arttt补+3个板厚(" (rtos tbh 2 3)  "):" ))))) 
+(setq i (cdr (assoc 42 cent)))
+(setq i (+ i (* 3 tbh)))
+(setq i  (strcat "...折好" (rtos i 2 3)  ))
+(princ i)
+;修改标注值(替换值,原值,点对中) 
+(setq cent (subst(cons 1 i)(assoc 1 cent)cent))
+(entmod cent)
+(princ)
+)
+
+;jianpf20190516s测试代结束
