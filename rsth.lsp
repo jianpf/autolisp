@@ -276,7 +276,7 @@
 ;常用字符串:
 (progn
 (initget "0 1 2 3 4 5 6 7 8 9 a s d f g b l q u y")
-(setq getw (getkword "文本 特殊处理 [小孔打标(0)/切开孔折痕(1)/烧出折痕(2)/切穿(3)/加微连(q)/来料加工(4)/共边排版(5)/保存排版(6)/要开单(7)/板反过来切(8)/加补偿(9)/每件价(a)/照线折(s)/画线折(d)/光面在外(f)/光面在内(g)/暂时不做(b)/保留余料(l)]/开百叶(u)/先打样1件(y)" ))	    
+(setq getw (getkword "文本 特殊处理 [小孔打标(0)/切开孔折痕(1)/烧出折痕(2)/切穿(3)/加微连(q)/来料加工(4)/共边排版(5)/保存排版(6)/车间开单(7)/板反过来切(8)/加补偿(9)/每件价(a)/照线折(s)/画线折(d)/光面在外(f)/光面在内(g)/暂时不做(b)/保留余料(l)/开百叶(u)/先打样1件(y)]" ))	    
 (princ getw)
 (cond
 ((= getw "0") (setq cailiao  "小孔打标"))
@@ -286,7 +286,7 @@
 ((= getw "4") (setq cailiao "来料加工"))
 ((= getw "5") (setq cailiao "共边排版"))
 ((= getw "6") (setq cailiao "保存排版"))
-((= getw "7") (setq cailiao "要开单"))
+((= getw "7") (setq cailiao "车间开单"))
 ((= getw "8") (setq cailiao "板反过来切"))
 ((= getw "9") (setq cailiao "加补偿"))
 ((= getw "a") (setq cailiao "元/件"))
@@ -319,6 +319,120 @@
 
 
 
+;-------------------------------------------
+;20181123.20190408jianpf
+;创建文本
+(defun c:sts()
+ 
+(if (not rsth) (setq rsth 60))
+
+(setq txtpit (getpoint "\n创建ss 单行文本位置:"))
+  
+ 
+;常用字符串:
+(progn
+(initget "0 1 2 3 4 5 6 7 8 9 a s d f g b l q u y")
+(setq getw (getkword "文本 特殊处理 [小孔打标(0)/切开孔折痕(1)/烧出折痕(2)/切穿(3)/加微连(q)/来料加工(4)/共边排版(5)/保存排版(6)/车间开单(7)/板反过来切(8)/加补偿(9)/每件价(a)/照线折(s)/画线折(d)/光面在外(f)/光面在内(g)/暂时不做(b)/保留余料(l)]/开百叶(u)/先打样1件(y)" ))	    
+(princ getw)
+(cond
+((= getw "0") (setq cailiao  "小孔打标"))
+((= getw "1") (setq cailiao "切开孔折痕"))
+((= getw "2") (setq cailiao "烧出折痕"))
+((= getw "3") (setq cailiao "切穿"))
+((= getw "4") (setq cailiao "来料加工"))
+((= getw "5") (setq cailiao "共边排版"))
+((= getw "6") (setq cailiao "保存排版"))
+((= getw "7") (setq cailiao "车间开单"))
+((= getw "8") (setq cailiao "板反过来切"))
+((= getw "9") (setq cailiao "加补偿"))
+((= getw "a") (setq cailiao "报价:元/件"))
+((= getw "s") (setq cailiao "照线折"))
+((= getw "d") (setq cailiao "画线折"))
+((= getw "f") (setq cailiao "光面在外"))
+((= getw "g") (setq cailiao "光面在内"))
+((= getw "b") (setq cailiao "暂时不做"))
+((= getw "l") (setq cailiao "保留余料"))
+((= getw "q") (setq cailiao "加微连"))
+((= getw "u") (setq cailiao "开百叶"))
+((= getw "y") (setq cailiao "先打样1件"))
+((= getw nil) (setq cailiao  "特殊处理"))
+);end cond
+);end progn
+ 
+  
+
+(setq rstext (strcat " "cailiao " "  ))
+
+(princ rstext)
+
+
+(command "text" txtpit  rsth 0 rstext )
+
+ 
+(princ)
+
+)
+
+
+
+
+;-------------------------------------------
+;20181123.20190408jianpf
+;创建文本
+(defun c:stss()
+ 
+(if (not rsth) (setq rsth 60))
+
+(setq txtpit (getpoint "\n创建ss 单行文本位置:"))
+  
+ 
+;常用字符串:
+(progn
+(initget "0 1 2 3 4 5 6 7 8 9 a s d f g b l q u y x")
+(setq getw (getkword "文本 特殊处理 [注意反刀(d)/打印图(g)/原图面看见虚线(x)]" ))	    
+(princ getw)
+(cond
+((= getw "0") (setq cailiao ""))
+((= getw "1") (setq cailiao ""))
+((= getw "2") (setq cailiao ""))
+((= getw "3") (setq cailiao ""))
+((= getw "4") (setq cailiao ""))
+((= getw "5") (setq cailiao ""))
+((= getw "6") (setq cailiao ""))
+((= getw "7") (setq cailiao ""))
+((= getw "8") (setq cailiao ""))
+((= getw "9") (setq cailiao ""))
+((= getw "a") (setq cailiao ""))
+((= getw "s") (setq cailiao ""))
+((= getw "d") (setq cailiao "注意反刀"))
+((= getw "f") (setq cailiao ""))
+((= getw "g") (setq cailiao "打印图"))
+((= getw "b") (setq cailiao ""))
+((= getw "l") (setq cailiao ""))
+((= getw "q") (setq cailiao ""))
+((= getw "u") (setq cailiao ""))
+((= getw "y") (setq cailiao ""))
+((= getw "x") (setq cailiao "原图面看见虚线"))
+((= getw nil) (setq cailiao  "特殊处理"))
+);end cond
+);end progn
+ 
+  
+
+(setq rstext (strcat " "cailiao " "  ))
+
+(princ rstext)
+
+
+(command "text" txtpit  rsth 0 rstext )
+
+ 
+(princ)
+
+)
+
+
+
 
 
 ;退出
@@ -327,7 +441,70 @@
     (command "close" "y" "n")
 (princ)
 )
+;保存退出块jianpf20190512x
+(defun c:bss()
+    (command "bclose" "s")
+(princ)
+)
 
+
+
+
+;-------------------------------------------
+;20190330x
+;球标编号(燕秀工具箱2.81>模具工具>球标编号)
+(defun c:qbbh()
+ 
+(if (not rsth) (setq rsth 60))
+(if (= qbxh nil) (setq qbxh 1))
+(if (not qbxh) (setq qbxh 1))
+(repeat 100
+(setq txtpit (getpoint (strcat  "\n创建 球标编号位置:"  (rtos qbxh 2 3) ">"  )))
+
+(setq rstext (strcat "[ " (rtos qbxh 2 3) " ]"  ))
+
+
+(command "text" txtpit  rsth 0 rstext   )
+(setq qbxh (+ qbxh 1))
+ 
+(princ)
+)
+)
+
+
+
+;-------------------------------------------
+;20190330x
+;球标编号(燕秀工具箱2.81>模具工具>球标编号)
+(defun c:qbbh()
+ 
+(if (not rsth) (setq rsth 60))
+(if (= qbxh nil) (setq qbxh 1))
+(if (not qbxh) (setq qbxh 1))
+(repeat 100
+(setq txtpit (getpoint (strcat  "\n创建 球标编号位置:"  (rtos qbxh 2 3) ">"  )))
+
+(setq rstext (strcat "[ " (rtos qbxh 2 3) " ]"  ))
+
+
+(command "text" txtpit  rsth 0 rstext   )
+(setq qbxh (+ qbxh 1))
+ 
+(princ)
+)
+)
+
+
+
+;20190330x
+;重置球标序号
+(defun c:sqbbh()
+
+(if (= qbxh nil) (setq qbxh 1))
+(if (not qbxh) (setq qbxh 1))
+(setq qbxh (getreal (strcat "重置球标序号:" (rtos qbxh 2 3) ">"  )))
+(princ)
+)
 
 
 
@@ -420,6 +597,240 @@ DwgProps (vla-Get-SummaryInfo Doc))
  
 )
 ;结束调用外部cmd程序
+
+;定义函数获取文件名和绝对路径str
+(defun filename()
+(progn
+;加载ActiveX
+  (VL-LOAD-COM)
+;定义CAD对象
+  (setq AcadObject (vlax-get-acad-object))
+;定义文档对象
+  (setq      AcadDocument (vla-get-ActiveDocument AcadObject))
+;定义到当前激活对象
+    (setq    mSpace (vla-get-ModelSpace AcadDocument))
+;定义当前文档
+  (setq activeDoc (vla-get-ActiveDocument AcadObject))
+;获取文件路径和文件名
+  (setq filepathname (strcat (vla-get-path activeDoc) "\\" (vla-get-name activeDoc)) )
+  (setq filenamestr (vla-get-name activeDoc))
+  (princ (vla-get-name activeDoc))
+
+  )
+)
+
+
+;20190317x外部尺寸字符串
+(defun c:wst( / bl)
+
+;获取文件名
+(filename)  
+(if (not rsth) (setq rsth 60))
+
+  
+;文本位置
+  
+(setq txtpit (getpoint "\n创建 单行文本位置:"))
+
+
+;比例
+(setq bl (getstring "\n比例 bl:")) 
+;判断输入长度是否为0字节,否则获取标注对象
+(if (= (strlen bl) 0) 
+(progn
+(setq cent (entget (car (entsel (strcat "获取标注值:" )))))
+;获取标注值
+(setq bl (cdr (assoc 42 cent)))
+;转字符串
+(setq bl (rtos bl 2 3)   ) 
+)
+;结束判断
+)
+
+
+
+  
+;厚度
+(setq thb (getstring "\n创建 厚度 T:")) 
+;材料:
+(progn
+(initget "0 1 2 3 4 5 6 201 304")
+(setq getw (getkword "创建 [冷板(0)/热板(1)/201(2)/304(3)/来料(4)/铁花纹板(5)/镀锌板(6)]" ))	    
+(princ getw)
+(cond
+((= getw "0") (setq cailiao  "冷板"))
+((= getw "1") (setq cailiao "热板"))
+((= getw "2") (setq cailiao "201"))
+((= getw "201") (setq cailiao "201"))
+((= getw "3") (setq cailiao "304"))
+((= getw "304") (setq cailiao "304"))
+((= getw "4") (setq cailiao "来料"))
+((= getw "5") (setq cailiao "铁花纹板"))
+((= getw "6") (setq cailiao "镀锌板"))
+((= getw nil) (setq cailiao  "冷板"))
+);end cond
+);end progn
+;数量
+(setq pcs (getstring"\n创建 数量 PCS:")) 
+
+
+(setq rstext (strcat "T" thb " " cailiao  " " pcs  "PCS"  "     %"  bl " %" filenamestr  ) )
+
+(command "text" txtpit  rsth 0 rstext )
+
+
+;字符串保存外部文件 
+ 
+(setq str (strcat rstext ) )
+(setq f1 (open "c:\\temp\\wst.txt" "w"))  
+(write-line str f1 )
+
+(close f1)
+
+(princ str)
+(princ)
+
+)
+
+
+
+
+
+;;;
+
+;20190317x外部尺寸字符串20190325x
+(defun c:wst( / bl)
+
+;获取文件名
+(filename)  
+(if (not rsth) (setq rsth 60))
+
+  
+;文本位置
+  
+(setq txtpit (getpoint "\n创建 单行文本位置:"))
+
+
+;比例
+(setq bl (getstring "\n比例 bl:")) 
+;判断输入长度是否为0字节,否则获取标注对象
+(if (= (strlen bl) 0) 
+(progn
+(setq cent (entget (car (entsel (strcat "获取标注值:" )))))
+;获取标注值
+(setq bl (cdr (assoc 42 cent)))
+;判断标注值是否为负数
+(if (< bl 0) 
+(progn
+(setq bl (getstring (strcat "\n错误标注值!!!!:" bl )))
+)
+;结束标注负数判断
+)
+
+;转字符串
+(setq bl (rtos bl 2 3)   ) 
+)
+;结束判断
+)
+
+
+
+  
+;厚度
+(setq thb (getstring (strcat"\n创建 厚度 T:"  "\n标注值比例:" bl ))) 
+;材料:
+(progn
+(initget "0 1 2 3 4 5 6 201 304")
+(setq getw (getkword "创建 [冷板(0)/热板(1)/201(2)/304(3)/来料(4)/铁花纹板(5)/镀锌板(6)]" ))	    
+(princ getw)
+(cond
+((= getw "0") (setq cailiao  "冷板"))
+((= getw "1") (setq cailiao "热板"))
+((= getw "2") (setq cailiao "201"))
+((= getw "201") (setq cailiao "201"))
+((= getw "3") (setq cailiao "304"))
+((= getw "304") (setq cailiao "304"))
+((= getw "4") (setq cailiao "来料"))
+((= getw "5") (setq cailiao "铁花纹板"))
+((= getw "6") (setq cailiao "镀锌板"))
+((= getw nil) (setq cailiao  "冷板"))
+);end cond
+);end progn
+;数量
+(setq pcs (getstring"\n创建 数量 PCS:")) 
+
+
+(setq rstext (strcat "T" thb " " cailiao  " " pcs  "PCS"  "     %"  bl " %" filenamestr  ) )
+
+(command "text" txtpit  rsth 0 rstext )
+
+
+;字符串保存外部文件 
+ 
+(setq str (strcat rstext ) )
+(setq f1 (open "c:\\temp\\wst.txt" "w"))  
+(write-line str f1 )
+
+(close f1)
+  
+(setq str (strcat bl ) )
+(setq f2 (open "c:\\temp\\wstbl.txt" "w"))  
+(write-line str f2 )
+
+(close f2)
+
+(setq str (strcat filenamestr ) )
+(setq f3 (open "c:\\temp\\wstname.txt" "w"))  
+(write-line str f3 )
+
+(close f3)
+
+(princ str)
+(princ)
+
+)
+
+
+
+;;;
+
+
+;20190317x外部尺寸字符串20190325x
+(defun c:rwst()
+ 
+(setq str (strcat "rrrrrrr")) 
+(setq f1 (open "c:\\temp\\wst.txt" "r"))  
+(setq str (read-line  f1 ))
+
+(close f1)
+
+(princ str)
+(princ)
+
+  
+(if (not rsth) (setq rsth 60))
+
+(setq txtpit (getpoint "\n粘贴 单行文本位置:"))
+  
+(princ rstext)
+
+
+(command "text" txtpit  rsth 0 str )
+(princ )
+
+
+
+(setq slen (strlen str))
+(setq slen0 1)
+(while (< slen0 slen)
+(progn
+(setq slen0 (+ slen0 1))
+
+)
+)
+  
+)
+
 
 
 
