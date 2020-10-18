@@ -13,12 +13,12 @@
 (setq thb (getstring "\n创建 厚度 T:")) 
 ;材料:
 (progn
-(initget "0 1 2 3 4 5 6 201 304")
-(setq getw (getkword "创建 [冷板(0)/热板(1)/201(2)/304(3)/来料(4)/铁花纹板(5)/镀锌板(6)]" ))	    
+(initget "0 1 2 3 4 5 6 7 8 201 304")
+(setq getw (getkword "创建 [冷板(0)/A3铁(1)/201(2)/304(3)/来料(4)/铁花纹板(5)/镀锌板(6)/来料不锈钢(7)/来料铝(8)]" ))	    
 (princ getw)
 (cond
 ((= getw "0") (setq cailiao  "冷板"))
-((= getw "1") (setq cailiao "热板"))
+((= getw "1") (setq cailiao "A3铁"))
 ((= getw "2") (setq cailiao "201"))
 ((= getw "201") (setq cailiao "201"))
 ((= getw "3") (setq cailiao "304"))
@@ -26,6 +26,8 @@
 ((= getw "4") (setq cailiao "来料"))
 ((= getw "5") (setq cailiao "铁花纹板"))
 ((= getw "6") (setq cailiao "镀锌板"))
+((= getw "7") (setq cailiao "来料不锈钢"))
+((= getw "8") (setq cailiao "来料铝"))
 ((= getw nil) (setq cailiao  "冷板"))
 );end cond
 );end progn
@@ -461,12 +463,15 @@
 (defun c:qbbh()
  
 (if (not rsth) (setq rsth 60))
+
+(if (= qbxht nil) (setq qbxht ""))
+(if (= qbxhtt nil) (setq qbxhtt ""))
 (if (= qbxh nil) (setq qbxh 1))
 (if (not qbxh) (setq qbxh 1))
 (repeat 100
 (setq txtpit (getpoint (strcat  "\n创建 球标编号位置:"  (rtos qbxh 2 3) ">"  )))
 
-(setq rstext (strcat "[ " (rtos qbxh 2 3) " ]"  ))
+(setq rstext (strcat "[" qbxht " " (rtos qbxh 2 3) " " qbxhtt "]"  ))
 
 
 (command "text" txtpit  rsth 0 rstext   )
@@ -481,7 +486,7 @@
 ;-------------------------------------------
 ;20190330x
 ;球标编号(燕秀工具箱2.81>模具工具>球标编号)
-(defun c:qbbh()
+(defun c:qbbth()
  
 (if (not rsth) (setq rsth 60))
 (if (= qbxh nil) (setq qbxh 1))
@@ -504,7 +509,8 @@
 ;20190330x
 ;重置球标序号
 (defun c:sqbbh()
-
+(setq qbxht (getstring "前缀符+"));20200903sJianPF
+(setq qbxhtt (getstring "+后缀符"));20200903sJianPF
 (if (= qbxh nil) (setq qbxh 1))
 (if (not qbxh) (setq qbxh 1))
 (setq qbxh (getreal (strcat "重置球标序号:" (rtos qbxh 2 3) ">"  )))
@@ -600,7 +606,7 @@ DwgProps (vla-Get-SummaryInfo Doc))
 ;定义当前文档
   (setq activeDoc (vla-get-ActiveDocument AcadObject))
 ;获取文件路径和文件名
-  (setq filepathname (strcat (vla-get-path activeDoc) "\\" (vla-get-name activeDoc)) )
+  (setq filepathname (strcat "\""(vla-get-path activeDoc) "\\" (vla-get-name activeDoc)"\"") )
 
   (startapp sendto filepathname )
   (princ (strcat (menucmd "M=$(edtime,0,YYYY-MO-DD-HH:MM:SS am/pm)") "  " filepathname " -> 发送到激光机:" ) ))
@@ -654,8 +660,8 @@ DwgProps (vla-Get-SummaryInfo Doc))
 ;;;
  
 
-;20190317x外部尺寸字符串20190325x-20190715xjianpf
-(defun c:wst( / bl)
+;20190317x外部尺寸字符串20190325x-20190715x-20200820xjianpf
+(defun c:wst( / bl OBJ)
 
 ;获取文件名
 (filename)  
@@ -664,11 +670,14 @@ DwgProps (vla-Get-SummaryInfo Doc))
 
 
 ;比例
-(setq bl (getstring "\n比例 bl:")) 
+(setq bl (getstring "\n比例 bl:"))
+;初始化标注比例系数为0,scrw会提示无比例
+(setq bbl 0)
 ;判断输入长度是否为0字节,否则获取标注对象
 (if (= (strlen bl) 0) 
 (progn
-(setq cent (entget (car (entsel (strcat "获取标注值:" )))))
+(setq cen  (car (entsel (strcat "获取标注值:" ))))
+(setq cent (entget cen))
 ;获取标注值
 (setq bl (cdr (assoc 42 cent)))
 ;判断标注值是否为负数
@@ -678,26 +687,26 @@ DwgProps (vla-Get-SummaryInfo Doc))
 )
 ;结束标注负数判断
 )
-
 ;转字符串
 (setq bl (rtos bl 2 3)   ) 
-)
+;获取标注比例系数20200801-20200912sjianPF
+(setq obj (vlax-ename->vla-object cen))
+(vlax-get obj 'scalefactor);全局比例
+(setq bbl(vlax-get obj 'linearscalefactor)) ;测量比例
 ;结束判断
 )
+)
 
-
-
-  
 ;厚度
-(setq thb (getstring (strcat"\n创建 厚度 T:"  "\n标注值比例:" bl ))) 
+(setq thb (getstring (strcat"\n创建 厚度 T:"  "\n标注值比例:" bl " scl->" (rtos bbl 2 5)))) 
 ;材料:
 (progn
-(initget "0 1 2 3 4 5 6 201 304")
-(setq getw (getkword "创建 [冷板(0)/热板(1)/201(2)/304(3)/来料(4)/铁花纹板(5)/镀锌板(6)]" ))	    
+(initget "0 1 2 3 4 5 6 7 8 201 304")
+(setq getw (getkword "创建 [冷板(0)/A3铁(1)/201(2)/304(3)/来料(4)/铁花纹板(5)/镀锌板(6)/来料不锈钢(7)/来料铝(8)]" ))    
 (princ getw)
 (cond
 ((= getw "0") (setq cailiao  "冷板"))
-((= getw "1") (setq cailiao "热板"))
+((= getw "1") (setq cailiao "A3铁"))
 ((= getw "2") (setq cailiao "201"))
 ((= getw "201") (setq cailiao "201"))
 ((= getw "3") (setq cailiao "304"))
@@ -705,6 +714,8 @@ DwgProps (vla-Get-SummaryInfo Doc))
 ((= getw "4") (setq cailiao "来料"))
 ((= getw "5") (setq cailiao "铁花纹板"))
 ((= getw "6") (setq cailiao "镀锌板"))
+((= getw "7") (setq cailiao "来料不锈钢"))
+((= getw "8") (setq cailiao "来料铝"))
 ((= getw nil) (setq cailiao  "冷板"))
 );end cond
 );end progn
@@ -731,10 +742,15 @@ DwgProps (vla-Get-SummaryInfo Doc))
 
 (close f1)
   
-(setq str (strcat bl ) )
+(setq str (strcat bl " # " (rtos bbl 2 5) ) )
 (setq f2 (open "c:\\temp\\wstbl.txt" "w"))  
 (write-line str f2 )
 
+(close f2)
+;20200912sJinaPF
+(setq str (strcat (rtos bbl 2 5) ) )
+(setq f2 (open "c:\\temp\\wstbbl.txt" "w"))  
+(write-line str f2 )
 (close f2)
 
 (setq str (strcat filenamestr ) )
@@ -833,8 +849,11 @@ DwgProps (vla-Get-SummaryInfo Doc))
 
 ;20190715jianpf修改成默认放下边
 ;(setq txtpit (getpoint "\n粘贴 bln单行文本位置:"))
-(setq txtpit (list (car txtpit) (- (cadr txtpit) 100)))
-(setq str (strcat "%"  bl " %" filenamestr ))
+(setq txtpit (list (car txtpit) (- (cadr txtpit) 110)))
+(command "text" txtpit  (/ rsth 2) 0 filenamestr )
+;20200822sJianPF分三行显示比例
+(setq txtpit (list (car txtpit) (- (cadr txtpit) 80)))
+(setq str (strcat "%"  bl " %" ))
 (command "text" txtpit  (/ rsth 2) 0 str )
 ;
 
@@ -918,6 +937,24 @@ DwgProps (vla-Get-SummaryInfo Doc))
 
   )
 
+;读取比例快捷键rsc scr --JianPF20200912s
+(defun c:rsc()
+  (rwsc)
+)
+(defun c:scrw()
+  (rwsc)
+)
+
+;读取比例快捷键rsc--JianPF20200912s
+(defun rwsc()
+(setq f1 (open "c:\\temp\\wstbbl.txt" "r"))  
+(setq bbl (atof (read-line  f1 )))
+(close f1)
+(setq ent (ssget ))
+(command "_scale" ent "" pause bbl)
+)
+
+
 
 ;比例计算rar
 (defun c:rar()
@@ -990,8 +1027,6 @@ DwgProps (vla-Get-SummaryInfo Doc))
 ;转圆直径
 (setq c_d (* c_r 2))
 
-  
-
 ;获取圆心点
 (setq c_p (cdr (assoc 10 ent_cf )))
 ;判断圆是否小于板厚
@@ -1007,7 +1042,7 @@ DwgProps (vla-Get-SummaryInfo Doc))
 (setq fp3 (list ppx (- ppy cdl))) 
 (setq fp4 (list ppx (+ ppy cdl)))
 (setvar "osmode" 0);;关闭捕捉
-   ;;取得当前颜色为#os6
+;;取得当前颜色为#os6
 ;线条变色
   (setq  os6 (getvar "Cecolor"))
   (setvar "cecolor" "6");改变当前颜色为
@@ -1034,9 +1069,21 @@ DwgProps (vla-Get-SummaryInfo Doc))
 (setq txtstr (strcat filenamestr "" ) )
 (command "text" txtpit  rsth 0 txtstr ) 
 )
+;20190921xJianPF 输出文件名
+(defun c:stssg()
+(if (not rsth) (setq rsth 60)) 
+(setq txtpit (getpoint "\n粘贴 单行文本位置:"))
+(setq txtstr (strcat "打印图" "" ) )
+(command "text" txtpit  rsth 0 txtstr ) 
+)
 
 ;显示全局比例因子20191116sJianpf
 (defun c:bb()
+(bbb)
+)
+;显示全局比例因子20191116sJianpf
+(defun c:bbb()
+(setq cen (car (entsel)))
 (bbb)
 
 
@@ -1084,13 +1131,103 @@ DwgProps (vla-Get-SummaryInfo Doc))
 )
 
 
-;显示全局比例因子20191116sJianpf
-(defun bbb()
+;显示全局比例因子20191116sJianpf20200820x
+(defun bbb(/ E OBJ)
 ;此图纸比例
-(setq bbyz (getvar "dimscale"))
+(setq bbca (getvar "dimscale"))
 ;标注比例
-(setq bbyzz (getvar "dimlfac"))
-(setq strbb  (strcat "\n图纸比例: " (rtos bbyz) "\n标注比例SC->" (rtos bbyzz) ) )
+(setq bblf (getvar "dimlfac"))
+(if (not cen) 
+(progn
+(setq cen (car (entsel)))
+)
+)
+(setq obj (vlax-ename->vla-object cen))
+(vlax-get obj 'scalefactor);全局比例
+(setq bbl(vlax-get obj 'linearscalefactor)) ;测量比例
+(setq strbb  (strcat "\n标注比例SCl->" (rtos bbl) "\n图纸比例: " (rtos bbca) "\n全局标注比例sc->" (rtos bblf)  ) )
 (getpoint strbb )
 )
 
+;(vlax-dump-object(vlax-ename->vla-object(car(entsel)))T)
+
+
+
+;拉伸快捷键ssg--JianPF20200825
+(defun c:ssg()
+(setq ent (ssget ))
+;(setq pit (getpoint "中心点:"))
+(command "_stretch" ent "" pause "" pause 100)
+)
+
+
+
+;切开孔折痕JianPF20200918x------------
+(defun  c:cvd() 
+;获取圆对象
+(setvar "osmode" 16383);;启动捕捉
+(setq ent_cff (entget (car (entsel ))) )
+(setq ent_cf ent_cff)
+;获取圆半径
+(setq c_r (cdr (assoc 40 ent_cf )))
+;转圆直径
+(setq c_d (* c_r 2))
+;获取圆心点
+(setq c_p (cdr (assoc 10 ent_cf )))
+
+(setvar "osmode" 141);;启动捕捉
+;(setq p1,p2 (getpoint) (getpoint))  
+
+
+(setvar "osmode" 16383);;启动捕捉
+
+;判断圆是否小于板厚
+(if (< c_d tbh) (progn
+(setq cdl (/ tbh 2))
+;打标最小值Jianpf20190910
+(if (< cdl 2.5) (setq cdl 2.5))
+  (setq ppx (car c_p))
+  (setq ppy (cadr c_p))
+;画横线(x1,y1)(x2,y2)
+(setq fp1 (list (- ppx cdl) ppy))
+(setq fp2 (list (+ ppx cdl) ppy))
+(setq fp3 (list ppx (- ppy cdl))) 
+(setq fp4 (list ppx (+ ppy cdl)))
+(setvar "osmode" 0);;关闭捕捉
+   ;;取得当前颜色为#os6
+;线条变色
+  (setq  os6 (getvar "Cecolor"))
+  (setvar "cecolor" "3");改变当前颜色为
+;画横线(x1,y1)(x2,y2)
+  (command  "line"  fp1  fp2  "")
+;画纵线(xx1,yy1)(xx2,yy2)
+  (command  "line"  fp3  fp4  "")
+
+  (command  "line"  p1  p2  "")
+(setvar "Cecolor" os6);颜色还原
+(setvar "osmode" 16383);;启动捕捉
+) )
+  (princ (strcat  "\n板厚="(rtos tbh)  " 直径=" (rtos c_d)))
+  (princ)
+)
+
+;jianpf 20201007x-Make In China-
+;均分数，均分总长度，分段数
+(defun c:jfss()
+(setq jfsc (getreal "均分总长度:"));
+;调用获取标注值函数赋值
+(if jfsc () (setq jfsc (raval)))
+(setq jfsd (getreal "分段数=  -1 + 总件数:"));
+(setq jfs (/ jfsc (- jfsd 1)));
+(setq jfsw (getreal (strcat   "\n均分数(中心间距  !jfs )为:" (rtos jfsc) "/(" (rtos jfsd) "-1)=" (rtos jfs) "\n实体边长扣除:")));
+(if jfsw () (setq jfsw (raval)))
+(setq jfsj  (- jfs jfsw));
+(getreal (strcat   "\n均分数(中心间距  !jfs )为:" (rtos jfsc) "/(" (rtos jfsd) "-1)=" (rtos jfs)  "\n均分实体(间距  !jfsj )为:" (rtos jfs) "-" (rtos jfsw) "=" (rtos jfsj) "\n"))
+(princ)
+)
+
+
+;加载报价代码
+(defun c:lspjgf()
+(LOAD "D:/LISP/jgf.lsp")
+)
