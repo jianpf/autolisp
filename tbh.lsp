@@ -232,7 +232,7 @@
 (defun c:kk()
  
   (setq hhs (getreal "
--a    ad:线性标注  adh 快速斜边标注   add:直径标注  art:折好高度1个板厚(artt:2个板厚 artt:3个板厚)
+-a    ad:线性标注  adh 快速斜边标注   add:直径标注 adcc:adee:连基标注 art:折好高度1个板厚(artt:2个板厚 artt:3个板厚)
       rat:ratt:rattt:前一次标注负-厚偏移
 -b bb:全局比例查看校对
 -c    cc:复制  ce:cee圆槽  cdd:修改圆直径  cddd:编辑圆直径  cm:梅花孔(水平孔距,水平孔距中点偏上垂直孔距,
@@ -247,6 +247,7 @@
       t:长度-1*板厚值(fat:获取标注值后-1*板厚值偏移)
       tt:长度-2板厚(fatt:获取标注值后-2*板厚值偏移)
       ttt:长度-3板厚(fattt:获取标注值后-3*板厚值偏移)
+-q    qsc:快速保存并退出 ppp:不保存退出 qbbh:sqbbh:qbch:qbth:球标设置图号(2021.4.18x)
 -r    rt(20190116x旧名jjt):模拟折弯1次 前长度=折弯长度+1*板厚值(jjat:标注值) rrf:rrfa:rrfsxy:余料减法
       rtt(jjtt):模拟折弯2次 前长度=折弯长度+2*板厚值(jjatt:标注值)
       rttt(jjttt):模拟折弯3次 前长度=折弯长度+3*板厚值(jjattt:标注值) rst12345:设置字体大小
