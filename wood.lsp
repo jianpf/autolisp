@@ -38,3 +38,49 @@
 (princ)
 )
 )
+
+;保存退出jianpf20190512x20210417w
+(defun c:qsc()
+  (command "_qsave" "");保存空名称就是当前文件名
+  (command "close" "y" "n");(command "close") "y" "n" 跳出窗口保存 )
+(princ)
+)
+;快速保存退出判断是否未保存窗口(DXF精度)JianPF20210418x
+(defun c:qsc()
+  (if (= 1 (getvar "DWGTITLED"));判断是否保存过标题
+    (progn (qsclose "qsclose"));保存过并退出
+    (progn (qsname "qsname"));创建保存并退出或不退出
+  ) 
+(princ)
+)
+;保存并退出图纸JianPF20210418x
+(defun qsclose(refstr )
+  (print refstr)
+  (setvar "THUMBSAVE" 1);更新略缩图RASTERPREVIEW(旧)
+  (command "_qsave" "");保存空名称就是当前文件名
+  (command "close" "y"  );保存过并退出
+)
+;保存窗口并退出图纸JianPF20210418x 
+(defun qsname(refstr  )
+  (print refstr)
+  (setvar "THUMBSAVE" 1)
+  (command "_save" "~" ""  )
+    (print (getvar "DBMOD"))
+  (if (= 0 (getvar "DBMOD"));创建保存并退出或不退出
+  (command "close" "y" );防止取消退出未保存
+  )
+)
+
+
+;KJJ--<------------------------------
+;连续编号ADEE快捷键JianPF20210418s
+(defun c:adee()
+  (command "_dimcontinue" )
+(princ)
+)
+;基准连续编号ADCC快捷键JianPF20210418s
+(defun c:adcc()
+  (command "_dimbaseline" )
+(princ)
+)
+;KJJ-->------------------------------
