@@ -80,13 +80,22 @@
   (command "line" (polar zwdp polarxx 5)  (polar zwdp polarxx xianchang) "") 
   )
 (defun dzwx ()
+    ;取得当前颜色为#os6
+;线条变色
+  (setq  os6 (getvar "Cecolor"))
+  (setvar "cecolor" "6");改变当前颜色为JianPF20201008x
   (zwx p1 polars)(zwx p1 polard)
   (zwx p2 polarf)(zwx p2 polard)
   (zwx p3 polare)(zwx p3 polarf)
   (zwx p4 polare)(zwx p4 polars)
+  (setvar "Cecolor" os6);颜色还原
   (setvar "osmode" 16383);;关闭捕捉
 )
 (defun ddzwx ()
+  ;;取得当前颜色为#os6
+;线条变色
+  (setq  os6 (getvar "Cecolor"))
+  (setvar "cecolor" "6");改变当前颜色为JianPF20201008x
   (zwx pz0 polars)
   (zwx pz3 polarf)
   (zwx pz5 polard)
@@ -95,7 +104,7 @@
   (zwx pz13 polars)
   (zwx pz15 polare)
   (zwx pz18 polard)
- 
+ (setvar "Cecolor" os6);颜色还原
   (setvar "osmode" 16383);;关闭捕捉
 )
 
@@ -105,6 +114,11 @@
 (defun c:jjh()
   (ddzwx)
   )
+(defun c:jjhh()
+  (ddzwx)(dzwx)
+  )
+
+
 (defun c:jjbox()
   ;(setq tbh (getreal "设置实际板厚度(mm):"))
   ;判断板厚是否存在
@@ -174,6 +188,7 @@
 (defun c:jbtxt()
 (setq txtpit (getpoint "\n创建 单行文本位置:"))
 (command "text" txtpit  (/ rsth 2) 0 rstext )
+
 )
 
 ;角度经度数
@@ -188,4 +203,5 @@
   (setq polarw (* pi (/ 135.0 180)))
   (setq polarz (* pi (/ 225.0 180)))
   (setq polarv (* pi (/ 315.0 180)))
+
 

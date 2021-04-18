@@ -2,7 +2,7 @@
 @echo off
 @title %1 "发送中..."
 @color c
-@rem 发送到位置
+@rem 发送到位置 C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\SendTo
 set sendto=\\Pc201703201122\共享文件
 set log.txt=E:\Work\Temp\sendto.log.txt
 
