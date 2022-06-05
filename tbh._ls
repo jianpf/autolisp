@@ -191,10 +191,9 @@
 -a    ad:线性标注  adh 快速斜边标注   add:直径标注  art:折好高度1个板厚(artt:2个板厚 artt:3个板厚)
       rat:ratt:rattt:前一次标注负-厚偏移
 -c    cc:复制  ce:圆槽  cdd:修改圆直径  cddd:编辑圆直径  cm:梅花孔(水平孔距,水平孔距中点偏上垂直孔距,
-      阵列孔距水平和垂直孔距的2倍) cxx:圆打标  ccds:同心圆环  ccdss设置圆环圆心(2019.09.13)
-      crec:半圆转正四边形  ccr:半圆转圆(2020.05.08)
--d    dft:半径圆和矩形剪线5次删除圆  dfx:dfxx点方向(折痕)  ddx:缺口<>  dff:dds:ddd:dde:快速折痕
-      div:平分段系统命令   dfg:dfge:dfgg:dfggs:dfggd:线两端(折痕) dar:(dimarc系统弧长)
+      阵列孔距水平和垂直孔距的2倍) cxx:圆打标  ccds:同心圆环  ccdss设置圆环圆心(2019.09.13) ccr:半圆转圆
+-d    dft:半径圆和矩形剪线5次删除圆  dfx:dfxx点方向(折痕)  ddx:缺口><v dff:dds:ddd:dde:快速折痕
+      div:平分段系统命令   dfg:dfge:dfgg:dfggs:dfggd:dfggg:线两端(折痕) dar:(dimarc系统弧长) crec:半圆转正四边形
 -e    ee:镜像  ega:清除组
 -f    fa:直线  fe:fea:总对称偏移  fs:偏移  ft:偏移1个板厚 fte:1半板厚  fsa:;获取标注值再偏移(标注值)
       fatttw:rfat:rfatt:rfattt:先获取标注分别三连偏移(Z钣金件2020.3)
@@ -214,8 +213,7 @@
       SELECTSIMILAR:(CAD)选择同类对象  stdst:累积刀数文件 stssf:插入文件名
 -w    wst:外部存储strfilename  rst:读取存储  rfn:当前文件名
 -r    rar:比例计算
--z    zzf:中心线
-
+-z    zzf:中心线  
 "))
 
 )
